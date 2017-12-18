@@ -166,7 +166,6 @@ public abstract class Connection implements java.io.Closeable {
         onDisconnect();
     }
 
-    @Override
     public void close() {
         queue.clear();
         autoReconnect = false;
@@ -235,7 +234,6 @@ public abstract class Connection implements java.io.Closeable {
 
     protected void sendQueue(){
         Thread t = new Thread(new Runnable() {
-            @Override
             public void run() {
                 sendQueue(sendInterval);
             }
@@ -261,7 +259,6 @@ public abstract class Connection implements java.io.Closeable {
     private void startThreads(){
         if (this.keepAlive && this.keepAliveInterval > 0) {
             this.heartbeat = new SafeThread(new Runnable() {
-                @Override
                 public void run() {
                     try {
                         Thread.sleep(keepAliveInterval);
@@ -282,7 +279,6 @@ public abstract class Connection implements java.io.Closeable {
         }
 
         this.receiver = new SafeThread(new Runnable() {
-            @Override
             public void run() {
                 //建立socket连接
                 if (isConnected()) {

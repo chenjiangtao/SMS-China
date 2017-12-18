@@ -25,7 +25,6 @@ public class SMGPReader implements Reader {
         this.in = new DataInputStream(is);
     }
 
-    @Override
     public Message read() throws IOException {
         byte[] header = new byte[SMGPBaseMessage.SZ_HEADER];
         byte[] cmdBytes = null;

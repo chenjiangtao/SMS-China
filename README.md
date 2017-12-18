@@ -1,9 +1,10 @@
 SMS-China
 =========
 
-中国移动CMPP、联通SGIP、电信SMGP三网合一企业短信网关
+~~中国移动CMPP、联通SGIP、电信SMGP三网合一企业短信网关~~
+#中国移动CMPP、电信SMGP两个模块
 
-http://222.66.24.235:8080/ctmp/file/api.zip
+文档下载 http://222.66.24.235:8080/ctmp/file/api.zip
 
 java sample code:
 

@@ -23,7 +23,6 @@ public class SMGPWriter implements Writer {
         this.out = new DataOutputStream(os);
     }
 
-    @Override
     public void write(Message message) throws IOException {
        if(message instanceof SMGPBaseMessage){
             byte[] bytes = null;

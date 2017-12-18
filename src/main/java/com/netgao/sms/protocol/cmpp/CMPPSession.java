@@ -28,25 +28,24 @@ public class CMPPSession implements Session {
     private boolean authenticated;
     private Object lock = new Object();
 
-    public CMPPSession(CMPPConnection connection, boolean authenticated){
+    public CMPPSession(CMPPConnection connection, boolean authenticated) {
         super();
         this.connection = connection;
         this.sessionId = UUID.randomUUID().toString();
         this.authenticated = authenticated;
     }
 
-    @Override
     public String getSessionId() {
         return sessionId;
     }
 
-    @Override
+
     public boolean isAuthenticated() {
         return authenticated;
     }
 
-    @Override
-    public void submit(String content, String spNumber, String userNumber){
+
+    public void submit(String content, String spNumber, String userNumber) {
         CMPPSubmitMessage submit = new CMPPSubmitMessage();
         submit.setServiceId("ACORN");
         submit.setAtTime("");
@@ -59,25 +58,25 @@ public class CMPPSession implements Session {
         send(submit);
     }
 
-    @Override
-    public void heartbeat(){
-        if(isAuthenticated()) {
-            CMPPActiveTestMessage activeTest=new CMPPActiveTestMessage();
+
+    public void heartbeat() {
+        if (isAuthenticated()) {
+            CMPPActiveTestMessage activeTest = new CMPPActiveTestMessage();
             activeTest.setSequenceId(SequenceGenerator.nextSequence());
             send(activeTest);
         }
     }
 
-    @Override
+
     public boolean authenticate() {
 
-        CMPPConnectMessage loginMsg=new CMPPConnectMessage();
+        CMPPConnectMessage loginMsg = new CMPPConnectMessage();
         loginMsg.setSourceAddr(connection.getSourceAddr());
         loginMsg.setVersion(connection.getVersion());
 
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMddHHmmss");
-        String tmp=dateFormat.format(calendar.getTime());
+        String tmp = dateFormat.format(calendar.getTime());
         loginMsg.setTimestamp(Integer.parseInt(tmp));
         loginMsg.setSharedSecret(connection.getPassword());
         loginMsg.setSequenceId(SequenceGenerator.nextSequence());
@@ -85,24 +84,23 @@ public class CMPPSession implements Session {
         synchronized (lock) {
             try {
                 lock.wait();
-            } catch (InterruptedException ex){
+            } catch (InterruptedException ex) {
                 setAuthenticated(false);
             }
         }
         return isAuthenticated();
     }
 
-    @Override
     public void close() throws IOException {
         //保存数据
-        if(isAuthenticated() ) {
+        if (isAuthenticated()) {
             CMPPTerminateMessage exit = new CMPPTerminateMessage();
             exit.setSequenceId(SequenceGenerator.nextSequence());
             send(exit);
             synchronized (lock) {
                 try {
                     lock.wait(6000);
-                } catch (InterruptedException ex){
+                } catch (InterruptedException ex) {
                     setAuthenticated(false);
                 }
             }
@@ -110,29 +108,27 @@ public class CMPPSession implements Session {
         connection.close();
     }
 
-    @Override
-    public void send(Message message){
+    public void send(Message message) {
         connection.send(message);
     }
 
-    @Override
     public void process(Message message) throws IOException {
-        if(message instanceof CMPPBaseMessage){
-            CMPPBaseMessage baseMsg = (CMPPBaseMessage)message;
-            if(isAuthenticated()){
+        if (message instanceof CMPPBaseMessage) {
+            CMPPBaseMessage baseMsg = (CMPPBaseMessage) message;
+            if (isAuthenticated()) {
                 if (baseMsg instanceof CMPPActiveTestMessage) {
-                    process((CMPPActiveTestMessage)baseMsg);
+                    process((CMPPActiveTestMessage) baseMsg);
                 } else if (baseMsg instanceof CMPPActiveTestRespMessage) {
                     // do nothing
-                } else if(baseMsg instanceof CMPPTerminateRespMessage){
-                    process((CMPPTerminateRespMessage)baseMsg);
-                } else if(message instanceof CMPPSubmitRespMessage) {
-                    process((CMPPSubmitRespMessage)message);
-                } else if(message instanceof CMPPDeliverMessage) {
-                    process((CMPPDeliverMessage)message);
+                } else if (baseMsg instanceof CMPPTerminateRespMessage) {
+                    process((CMPPTerminateRespMessage) baseMsg);
+                } else if (message instanceof CMPPSubmitRespMessage) {
+                    process((CMPPSubmitRespMessage) message);
+                } else if (message instanceof CMPPDeliverMessage) {
+                    process((CMPPDeliverMessage) message);
                 }
-            } else if(baseMsg instanceof CMPPConnectRespMessage){
-                process((CMPPConnectRespMessage)baseMsg);
+            } else if (baseMsg instanceof CMPPConnectRespMessage) {
+                process((CMPPConnectRespMessage) baseMsg);
             } else {
                 throw new IOException("the first packet was not CMPPBindRespMessage:" + baseMsg);
             }
@@ -147,7 +143,7 @@ public class CMPPSession implements Session {
 
     private void process(CMPPConnectRespMessage rsp) throws IOException {
         synchronized (lock) {
-            if(rsp.getStatus() == 0){
+            if (rsp.getStatus() == 0) {
                 setAuthenticated(true);
                 log.info("cmpp login success host=" + connection.getHost() + ",port=" + connection.getPort() + ",sourceAddr=" + connection.getSourceAddr());
             } else {
@@ -167,14 +163,17 @@ public class CMPPSession implements Session {
     }
 
     private void process(CMPPSubmitRespMessage rsp) throws IOException {
-        switch (rsp.getResult())   {
-            case 0:{   //发送成功
+        switch (rsp.getResult()) {
+            case 0: {   //发送成功
 
-            } break;
-            case 103:{  //平台流控,发送速度过快
+            }
+            break;
+            case 103: {  //平台流控,发送速度过快
 
-            } break;
-            default: break;
+            }
+            break;
+            default:
+                break;
         }
     }
 

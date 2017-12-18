@@ -20,8 +20,8 @@ public final class CMPPConnectMessage extends CMPPBaseMessage {
     private  String sourceAddr          = null;         //  sp_id
     private  byte[] authenticatorSource = null;         //  authenticatorSource
     private  String sharedSecret        = null;         //  password
-    private  int    version     = CMPPConstants.CMPP_VERSION;    //  version;
-    private  int    timestamp   = 0;                    //  timestamp;
+    private  int    version             = CMPPConstants.CMPP_VERSION;    //  version;
+    private  int    timestamp           = 0;                    //  timestamp;
 
     public CMPPConnectMessage(){
         super(CMPPConstants.CMPP_CONNECT, 27);

@@ -15,18 +15,18 @@ import java.io.OutputStream;
  * Time: 下午2:51
  * To change this template use File | Settings | File Templates.
  */
-public class CMPPConnection  extends Connection {
+public class CMPPConnection extends Connection {
 
-    public static final byte MT=0;
-    public static final byte MO=1;
-    public static final byte MT_MO=2;
+    public static final byte MT = 0;
+    public static final byte MO = 1;
+    public static final byte MT_MO = 2;
 
     private String sourceAddr;
     private String password;
     private byte loginMode;
     private byte version;
 
-    public CMPPConnection(){
+    public CMPPConnection() {
         super();
         setLoginMode(MT_MO);
     }
@@ -65,7 +65,7 @@ public class CMPPConnection  extends Connection {
 
     @Override
     protected Session createSession() {
-        return  new CMPPSession(this, false);
+        return new CMPPSession(this, false);
     }
 
     @Override
@@ -79,8 +79,8 @@ public class CMPPConnection  extends Connection {
     }
 
     @Override
-    public String toString(){
-        StringBuffer buffer=new StringBuffer();
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
         buffer.append("cmpp:[sourceAddr=").append(sourceAddr).append(",")
                 .append("host=").append(getHost()).append(",")
                 .append("port=").append(getPort()).append(",")

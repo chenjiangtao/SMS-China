@@ -24,7 +24,6 @@ public class CMPPReader implements Reader {
         this.in = new DataInputStream(is);
     }
 
-    @Override
     public Message read() throws IOException {
         byte[] header = new byte[CMPPBaseMessage.SZ_HEADER];
         byte[] cmdBytes = null;

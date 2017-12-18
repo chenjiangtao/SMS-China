@@ -36,17 +36,14 @@ public class SMGPSession implements Session {
         this.authenticated = authenticated;
     }
 
-    @Override
     public String getSessionId() {
         return sessionId;
     }
 
-    @Override
     public boolean isAuthenticated() {
         return authenticated;
     }
 
-    @Override
     public void submit(String content, String spNumber, String userNumber){
         SMGPSubmitMessage submit = new SMGPSubmitMessage();
         submit.setSrcTermId(spNumber);
@@ -70,7 +67,6 @@ public class SMGPSession implements Session {
         }
     }
 
-    @Override
     public void heartbeat(){
         if(isAuthenticated()) {
             SMGPActiveTestMessage activeTest=new SMGPActiveTestMessage();
@@ -79,7 +75,6 @@ public class SMGPSession implements Session {
         }
     }
 
-    @Override
     public boolean authenticate() {
 
         SMGPLoginMessage loginMsg=new SMGPLoginMessage();
@@ -104,7 +99,6 @@ public class SMGPSession implements Session {
         return isAuthenticated();
     }
 
-    @Override
     public void close() throws IOException {
         //保存数据
         if(isAuthenticated() ) {
@@ -122,12 +116,10 @@ public class SMGPSession implements Session {
         connection.close();
     }
 
-    @Override
     public void send(Message message){
         connection.send(message);
     }
 
-    @Override
     public void process(Message message) throws IOException {
         if(message instanceof SMGPBaseMessage){
             SMGPBaseMessage baseMsg = (SMGPBaseMessage)message;
